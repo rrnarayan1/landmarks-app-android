@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">LandmarksApp</string>
+    <string name="landmark_image_context">Image of Landmark</string>
+    <string name="skip_button">Skip</string>
+</resources>

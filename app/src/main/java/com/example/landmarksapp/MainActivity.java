@@ -3,24 +3,30 @@ package com.example.landmarksapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
     private static Landmark CURRENT_LANDMARK = null;
+    private int CURRENT_LANDMARK_INDEX = 0;
     private static ArrayList<Landmark> LANDMARKS = null;
     private enum PlayMode {
         LANDMARK_NAME,
         LANDMARK_LOCATION
     }
     private static PlayMode MODE;
-    private ArrayList<Integer> CHOICE_BUTTONS = new ArrayList<Integer>() {{
+    private final ArrayList<Integer> CHOICE_BUTTONS = new ArrayList<Integer>() {{
         add(R.id.choice_button_0);
         add(R.id.choice_button_1);
         add(R.id.choice_button_2);
@@ -34,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         LANDMARKS = Landmark.setUpLandmarks(this);
+        Collections.shuffle(LANDMARKS);
 
         changeLandmark();
     }
@@ -46,14 +53,18 @@ public class MainActivity extends AppCompatActivity {
         if (MODE == PlayMode.LANDMARK_NAME) {
             if (checkLandmarkNameChoice(view)) {
                 setLandmarkLocationOptions();
-                System.out.println("correct");
+                clearError();
+                setHeader("Where is this located?");
+                setSubheader(CURRENT_LANDMARK.get_name());
                 MODE = PlayMode.LANDMARK_LOCATION;
             } else {
-                System.out.println("wrong");
+                setError();
             }
         } else {
             if (checkLandmarkLocationChoice(view)) {
                 changeLandmark();
+            } else {
+                setError();
             }
         }
     }
@@ -72,16 +83,21 @@ public class MainActivity extends AppCompatActivity {
         setNewLandmark();
         setLandmarkImage();
         setLandmarkNameOptions();
+        clearError();
+        clearSubheader();
+        setHeader("What is this landmark called?");
         MODE = PlayMode.LANDMARK_NAME;
     }
 
     private void setNewLandmark() {
-        int index = (int) (Math.random()*LANDMARKS.size());
-        Landmark newLandmark = LANDMARKS.get(index);
-        if (newLandmark == CURRENT_LANDMARK) {
-            setNewLandmark();
+        if (CURRENT_LANDMARK_INDEX == LANDMARKS.size() - 1) {
+            Collections.shuffle(LANDMARKS);
+            CURRENT_LANDMARK_INDEX = 0;
+
+        } else {
+            CURRENT_LANDMARK_INDEX += 1;
         }
-        CURRENT_LANDMARK = newLandmark;
+        CURRENT_LANDMARK = LANDMARKS.get(CURRENT_LANDMARK_INDEX);
     }
 
     private void setLandmarkNameOptions() {
@@ -139,5 +155,31 @@ public class MainActivity extends AppCompatActivity {
     private void setLandmarkLocationButton(int index, Landmark landmark) {
         Button choiceButton = (Button) findViewById(CHOICE_BUTTONS.get(index));
         choiceButton.setText(landmark.get_location());
+    }
+
+    private void setHeader(String text) {
+        TextView header = (TextView) findViewById(R.id.header);
+        header.setText(text);
+    }
+
+    private void setSubheader(String text) {
+        TextView header = (TextView) findViewById(R.id.subheader);
+        header.setText(text);;
+    }
+
+    private void clearSubheader() {
+        TextView header = (TextView) findViewById(R.id.subheader);
+        header.setText("");
+    }
+
+    private void setError() {
+        TextView header = (TextView) findViewById(R.id.try_again);
+        header.setText("Try Again!");
+        header.setTextColor(Color.RED);
+    }
+
+    private void clearError() {
+        TextView header = (TextView) findViewById(R.id.try_again);
+        header.setText("");
     }
 }

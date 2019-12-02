@@ -42,7 +42,7 @@
     },
     {
       "name": "Opera House",
-      "location": "Sydney",
+      "location": "Australia",
       "image-name": "opera_house_sydney"
     },
     {
@@ -74,6 +74,11 @@
       "name": "White House",
       "location": "Washington, D.C",
       "image-name": "white_house"
+    },
+    {
+      "name": "Niagara Falls",
+      "location": "Canada",
+      "image-name": "niagara_falls"
     }
 
   ]
